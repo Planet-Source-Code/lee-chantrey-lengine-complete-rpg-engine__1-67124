@@ -1,0 +1,125 @@
+Set Img = LoadImage("ifrit\ifrit.bmp", 240 + 140, 40)
+Set Flash = LoadImage("ifrit\flash.bmp")
+Flash.Visible = False
+
+Set Img1 = LoadImage("ifrit\a0.bmp", 0, 0)
+Img1.LoadStore "ifrit", 6
+Img1.Visible = False
+
+bFrameMov = False
+
+bUp = 1
+bFire = 1
+bCount = 1
+iVar = 5
+iFC = 1
+
+TimedEvent "MoveIfrit","90"
+TimedEvent "HoverAffender","200"
+
+Sub MoveIfrit
+
+    If Img.X > 160 then
+       Img.X = Img.X - 4
+    else
+       StopTimed "MoveIfrit"
+
+       Img1.X = Img.X - 40 
+       Img1.Y = Img.Y + 60
+
+       TimedEvent "GrowFire","120"
+       img1.visible = true
+    end if
+
+End Sub
+
+Sub GrowFire
+
+    if bFire < 4 Then
+
+       Img1.Frame = bFire
+       bFire = bFire + 1
+
+    Else
+ 
+       StopTimed "GrowFire"
+       TimedEvent "RotateFire","40"
+
+    End If
+
+End Sub
+
+Sub RotateFire
+
+    bFire = bFire + 1
+
+    If bFire = 7 Then
+       bFire = 4
+
+       bCount = bCount + 1
+
+       if bCount = 4 Then
+          TimedEvent "LaunchFire","50"
+       end if
+    end if
+
+    Img1.Frame = bFire
+
+End Sub
+
+Sub LaunchFire
+
+    Img1.X = Img1.X - 10
+    Img1.Y = Img1.Y - 4
+
+    If Img1.X < 5 then
+       StopTimed "LaunchFire"
+       StopTimed "RotateFire"
+
+       TimedEvent "FlashScreen","40"
+    End if
+
+End Sub
+
+Sub FlashScreen
+
+    If Flash.Visible = False Then
+       Flash.Visible = True
+    Else
+       Flash.Visible = False
+    End If
+
+    iFC = iFC + 1
+
+    if iFC = 40 then
+       StopTimed "FlashScreen"
+       TimedEvent "PauseScreen","200"
+    end if
+
+End Sub  
+
+Sub PauseScreen
+    Finished
+End Sub
+
+Sub HoverAffender
+
+    If bUp = 1 Then
+       Img.Y = Img.Y - 2
+       Img1.Y = Img1.Y - 2
+       bUp = 2
+    ElseIf bUp = 2 Then
+       Img.Y = Img.Y - 2
+       Img1.Y = Img1.Y - 2
+       bUp = 3
+    ElseIf bUp = 3 Then
+       Img.Y = Img.Y + 2
+       Img1.Y = Img1.Y + 2
+       bUp = 4
+    ElseIf bUp = 4 Then
+       Img.Y = Img.Y + 2
+       Img1.Y = Img1.Y + 2
+       bUp = 1
+    End If
+
+End Sub

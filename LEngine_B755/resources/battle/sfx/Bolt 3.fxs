@@ -1,0 +1,207 @@
+xMove = 4
+
+I1D = False
+I2D = False
+I3D = False
+
+set Img = loadimage("Bolt 3\a0.bmp", 320 + (Offender.Width / 2), 27)
+set Img2 = loadimage("Bolt 3\a0.bmp", 320 + (Offender.Width / 2) - 36, 27)
+set Img3 = loadimage("Bolt 3\a0.bmp", 320 + (Offender.Width / 2) - 72, 27)
+Set Flash = loadimage("Bolt 3\flash.bmp", 0, 0)
+
+Img.LoadStore "bolt 3","3"
+Img2.LoadStore "bolt 3","3"
+Img3.LoadStore "bolt 3", "3"
+
+Img.Visible = False
+Img2.Visible = False
+Img3.Visible = False
+Flash.Visible = False
+
+TimedEvent "FlashOffender", "25"
+TimedEvent "HideOffender","900"
+
+bStopFlash = False
+
+Sub FlashOffender
+    
+    If Offender.Visible = False Then
+       Offender.Visible = True
+    Else
+       Offender.Visible = False
+    End If
+
+End Sub  
+
+Sub HideOffender
+
+    StopTimed "HideOffender"
+    StopTimed "FlashOffender"
+
+    Flash.Visible = True
+
+    For I = 0 to OffensiveParty.PartyUbound
+        OffensiveParty.Player(i).Visible = False
+    Next
+
+    TimedEvent "Start","400"
+
+End Sub
+
+Sub Start
+    StopTimed "Start"
+
+    Img.Visible = True
+    Img2.Visible = True
+    Img3.Visible = True
+
+    Flash.Visible = False
+
+    TimedEvent "Animate1","70"
+    TimedEvent "Animate2","85"
+    TimedEvent "Animate3","90"
+
+    TimedEvent "MoveLightFwd1","45"
+    TimedEvent "MoveLightFwd2","45"
+    TimedEvent "MoveLightFwd3","45"
+
+    TimedEvent "FlashChars","200"
+
+End Sub
+
+Sub Animate1
+   AnimateLight(Img)
+End Sub
+
+Sub Animate2
+   AnimateLight(Img2)
+End Sub
+
+Sub Animate3
+   AnimateLight(Img3)
+End Sub
+
+Sub FlashChars
+
+   For I = 0 to TargetParty.PartyUbound
+       If TargetParty.Player(i).Visible = False Then
+          TargetParty.Player(i).Visible = True
+       Else
+          TargetParty.Player(i).Visible = False
+       End If
+   Next
+
+End Sub
+
+Sub AnimateLight(srcLight)
+
+   If srcLight.Frame < 2 Then
+      srcLight.Frame = srcLight.Frame + 1
+ 
+      If bStopFlash = False Then
+         Flash.Visible = False
+      End If
+   Else
+      If bStopFlash = False Then
+         Flash.Visible = True
+      End If
+
+      srcLight.Frame = 0
+   End If
+
+End Sub
+
+Sub MoveLightFwd1
+
+   If Img.X > 0 Then
+      Img.X = Img.X - xMove
+
+   Else
+      StopTimed "MoveLightFwd1"
+      TimedEvent "MoveLightBack1","45"
+   End If
+
+End Sub
+
+Sub MoveLightFwd2
+
+   If Img2.X > 0 Then
+      Img2.X = Img2.X - xMove
+
+   Else
+      StopTimed "MoveLightFwd2"
+      TimedEvent "MoveLightBack2","45"
+   End If
+
+End Sub
+
+Sub MoveLightFwd3
+
+   If Img3.X > 0 Then
+      Img3.X = Img3.X - xMove
+
+   Else
+      StopTimed "MoveLightFwd3"
+      TimedEvent "MoveLightBack3","45"
+   End If
+
+End Sub
+
+Sub MoveLightBack1
+
+   If Img.X < Offender.X Then
+      Img.X = Img.X + xMove
+   Else
+      StopTimed "MoveLightBack1"
+
+      bStopFlash = True
+      Flash.Visible = True
+      TimedEvent "EndAll","1000"
+   End If
+
+End Sub
+
+Sub MoveLightBack2
+
+   If Img2.X < Offender.X Then
+      Img2.X = Img2.X + xMove
+   Else
+      StopTimed "MoveLightBack2"
+   End If
+
+End Sub
+
+Sub MoveLightBack3
+
+   If Img3.X < Offender.X Then
+      Img3.X = Img3.X + xMove
+   Else
+      StopTimed "MoveLightBack3"
+   End If
+
+End Sub
+
+Sub EndAll
+
+    If Target.Visible = False then
+       FlashChars
+    End if
+
+    For I = 0 to OffensiveParty.PartyUbound
+        If OffensiveParty.Player(i).Alive = True Then
+           OffensiveParty.Player(i).Visible = True
+        End If
+    Next
+    
+    Flash.Visible = False
+
+    StopTimed "Animate1"
+    StopTimed "Animate2"
+    StopTimed "Animate3"
+
+    StopTimed "EndAll"
+    StopTimed "FlashChars"
+
+    Finished
+
+End Sub

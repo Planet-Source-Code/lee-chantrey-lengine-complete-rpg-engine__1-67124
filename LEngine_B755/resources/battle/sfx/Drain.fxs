@@ -1,0 +1,92 @@
+' Drain.fxs
+' Programmer: Lee Chantrey
+
+Dim img
+
+'8 = Size of drain projectile / 2 (Gives center) ?
+TargetX = (Target.X - (Target.Width / 2))
+TargetY = (Target.Y - (Target.Height / 2))
+
+set Img = loadimage("drain\a0.bmp", Offender.X, Offender.Y - (Offender.Height / 2))
+Img.LoadStore "drain", 4
+
+yDist = Img.Y - TargetY
+xDist = Img.X - TargetX
+
+xMove = 4
+yMove = (yDist / xDist) * xMove
+
+TimedEvent "MoveBubbleAcross","20"
+
+Sub FlashTarget
+  If Target.Visible = False then
+     Target.Visible = True
+  Else
+     Target.Visible = False
+  End If
+End Sub
+
+Sub GrowBubble
+
+  If Img.Frame < 3 Then
+      Img.Frame = Img.Frame + 1
+  Else
+      StopTimed "GrowBubble"
+      StopTimed "FlashTarget"
+      Target.Visible = True
+ 
+      xMove = 3
+      TimedEvent "MoveBubbleBack","25"
+  End if
+
+End Sub
+
+Sub ShrinkBubble
+
+   If Img.Frame <> 1 Then
+      Img.Frame = Img.Frame - 1
+   Else
+      Finished
+   End if
+
+End Sub
+
+Sub MoveBubbleBack
+
+   xFin = false
+
+   if Img.X < (Offender.X) then
+      Img.X = Img.X + xMove
+   else
+      xFin = true
+   end if
+
+    Img.Y = Img.Y + yMove
+
+   if XFin = true then
+      StopTimed "MoveBubbleBack"
+      TimedEvent "ShrinkBubble",45    
+   end if
+
+End Sub
+
+Sub MoveBubbleAcross
+
+   xFin = false
+
+   if Img.X => (TargetX) then
+      Img.X = Img.X - xMove
+   else
+      xFin = true
+   end if
+
+   Img.Y = Img.Y - yMove
+
+   if  XFin = true then
+      StopTimed "MoveBubbleAcross"
+
+      TimedEvent "FlashTarget", "50"
+      TimedEvent "GrowBubble","100"
+   end if
+
+End Sub

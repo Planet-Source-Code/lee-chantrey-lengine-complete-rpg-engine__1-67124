@@ -1,0 +1,8 @@
+Dim iDamage
+iDamage = ((offender.strength/target.defence)*offender.strength*offender.strength/5)
+
+if iDamage > 9999 then
+    iDamage = 9999
+end if
+
+Target.HP = target.hp - iDamage

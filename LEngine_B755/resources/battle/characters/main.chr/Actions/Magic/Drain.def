@@ -1,0 +1,2 @@
+Target.HP = Target.HP - 160
+Offender.HP = Offender.HP + 160

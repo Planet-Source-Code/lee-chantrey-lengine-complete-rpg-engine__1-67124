@@ -1,0 +1,59 @@
+Dim I, img, iMov
+
+i = 1
+lFin = 40
+
+TargetX = Target.X - (Target.Width / 2) - 50
+TargetY = Target.Y
+
+set Img = loadimage("fire\a0.bmp", Offender.X - (Offender.Width / 2), Offender.Y - (Offender.Height / 2))
+Img.LoadStore "fire", 9
+
+yDist = Img.Y - TargetY
+xDist = Img.X - TargetX
+
+xMove = 4
+yMove = (yDist / xDist) * xMove
+
+TimedEvent "AnimateFire","100"
+TimedEvent "MoveFire","45"
+
+Sub AnimateFire
+   if I = 10 then
+      I = 8
+   end if
+  
+   Img.Frame = I
+   i = i + 1
+End Sub
+
+Sub MoveFire
+
+   xFin = false
+
+   Img.Y = Img.Y - yMove
+
+   if iMov < xDist then
+      Img.X = Img.X - xMove
+      iMov = iMov + 4
+   else
+      yMove = 0
+      xFin = true
+   end if
+
+   if xFin = true then
+      lFin = lFin - 1
+
+      If Target.Visible = False then
+         Target.Visible = True
+      Else
+         Target.Visible = False
+      End If
+
+      if lFin = 0 then  
+          Target.Visible = True 
+          Finished
+      end if
+   end if
+
+End Sub

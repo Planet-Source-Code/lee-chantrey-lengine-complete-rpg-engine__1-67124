@@ -1,0 +1,80 @@
+#Initialise Scene
+SetScen "Crystal.scr"
+BgColour "#00000"
+
+#Load NPC's into memory
+LoadNPC "NPC_bs" "Baron Solidier" "baron.chr"
+
+#Load Musc
+LoadAudio "mus_atheme" "music\ff7-3-19-aerith's_theme.mid"
+LoadAudio "mus_hurry" "music\ff7-1-07-hurry!.mid"
+
+#Start Scene
+AmendParty "main.chr"
+
+SetMusicAlias "mus_atheme"
+PlayMusic
+
+SetMainCharPos "6" "5" "1"
+Control "0"
+
+StoryVoice "CTRL = Action key. Shift = Cancel Key"
+
+AmendInventory "Potion"
+AmendEquipment "Rusty Sword"
+
+StoryVoice "Press F-1 to equip equipment on player 1. Then walk right 1 square"
+
+EventSquare "7" "5" "Goto 'Continue'"
+
+Control "1"
+SleepUntilNext
+
+:Continue
+Control "0"
+WalkCharX "Self" "10" "2"
+SetCharDirection "Self" "4"
+Say "Self" "Where are you ?"
+SetCharDirection "Self" "3"
+Say "Self" "You said you'd be here!"
+StoryVoice "* Hes in there! *"
+Say "Self" "... Whats that noise ?"
+SetCharDirection "Self" "1"
+
+StopMusic
+SetMusicAlias "mus_hurry"
+PlayMusic
+
+ShowChar "NPC_bs" "6" "1" "4"
+BounceCharExclem "Self"
+Say "Self" "Whoooah!?"
+
+Say "NPC_bs" "Looking for someone ?"
+
+WalkCharX "Self" "6" "8"
+SetCharDirection "self" "3"
+
+Say "Self" "WHERE IS SHE ? GIVE HER BACK NOW!"
+Say "NPC_bs" "Shud'up! i give the orders around here."
+
+Say "Self" "..." "0"
+WalkCharY "Self" "2" "8"
+SleepUntilNext
+
+BossBattle "balgar.ply"
+
+Say "Self" "Tell me where she is!"
+Hidechar "NPC_bs"
+Say "Self" "Arrrghh!"
+
+:FiendRel
+ReleaseFiend "goblin.ply"
+ReleaseFiend "evileye.ply"
+ReleaseFiend "arachne.ply"
+
+FiendChance "20" "5"
+
+Control "1"
+
+# To goto a new sty use GotoStory 'Name of STY File'
+# optional, re-Initialise the scene as before
